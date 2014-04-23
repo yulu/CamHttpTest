@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Basic Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="gray">#6a6a6a</color>
+    <color name="light_gray">#C3CECE</color>
+    <color name="black">#000000</color>
+    
+    <!-- Tansparante Colors -->
+    <color name="transparent0">#00000000</color>
+    <color name="transparent1">#55ffffff</color>
+    <color name="transparent2">#15000000</color>
+    <color name="transparent3">#33000000</color>
+    
+    <!-- Theme Colors -->
+    <color name="theme">#06ff00</color>
+    <color name="major">#f2c2b8</color>
+    <color name="pop">#d7f1e5</color>
+    
+    <!-- Variations -->
+    <color name="light_theme">#958798</color>
+    <color name="dark_theme">#825787</color>
+    <color name="light_major">#edd0cb</color>
+    <color name="dark_major">#ef8570</color>
+    <color name="light_pop">#dceae4</color>
+    <color name="dark_pop">#93cbb1</color>
+</resources>
