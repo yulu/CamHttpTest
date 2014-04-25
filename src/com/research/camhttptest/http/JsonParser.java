@@ -25,7 +25,7 @@ public class JsonParser {
 		}
 	}
 	
-	public static String ClassParse(String response){
+	public static String ClassParser(String response){
 		try{
 			if(response != null){
 				JSONObject ja = new JSONObject(response);
