@@ -1,10 +1,15 @@
 package com.research.camhttptest;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -13,12 +18,20 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.research.camhttptest.cv.CvFrameProcess;
 import com.research.camhttptest.gl.CamData;
 import com.research.camhttptest.gl.GLRenderer;
+import com.research.camhttptest.http.HttpConstant;
 import com.research.camhttptest.http.ImageUploader;
 
 public class MainActivity extends Activity implements LocationListener{
@@ -29,6 +42,7 @@ public class MainActivity extends Activity implements LocationListener{
 	private GLRenderer				mGLRenderer;
 	private CvFrameProcess			mCvFrameProcess = new CvFrameProcess();
 	private CamData					mCamData = new CamData();
+	
 	/**
 	 * GPS related
 	 */
@@ -40,7 +54,12 @@ public class MainActivity extends Activity implements LocationListener{
 
 	private Button mButton;
 	
+	//image uploader and image downloader
 	private ImageUploader mImageUploader;
+	protected ImageLoader imageLoader = ImageLoader.getInstance();
+	private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
+	private DisplayImageOptions options;
+	private ImageView mImageView;
 	
 	/**
 	 * Image byte array
@@ -82,7 +101,18 @@ public class MainActivity extends Activity implements LocationListener{
 		mGLRenderer.setCvFrame(mCamData);
 		mGLRenderer.setCvFrameProcessListener(mCvFrameProcess);
 		
+		//image loader options
+		options = new DisplayImageOptions.Builder()
+				.showImageOnLoading(R.drawable.ic_launcher)
+				.showImageForEmptyUri(R.drawable.ic_launcher)
+				.showImageOnFail(R.drawable.ic_launcher)
+				.cacheInMemory(true)
+				.cacheOnDisc(true)
+				.displayer(new RoundedBitmapDisplayer(20))
+				.build();
+		
 		//init ImageUploader
+		mImageView = (ImageView)findViewById(R.id.object_image);
 		mImageUploader = new ImageUploader();
 		mImageUploader.setImageUploadedListener(new ImageUploader.OnImageUploadedListener() {
 			
@@ -92,8 +122,10 @@ public class MainActivity extends Activity implements LocationListener{
 				runOnUiThread(new Runnable(){
 			        public void run() {
 			            Toast.makeText(getApplicationContext(), f_str, Toast.LENGTH_LONG).show();
+						imageLoader.displayImage(HttpConstant.DOWNLOAD_IMG_URI+f_str, mImageView, options, animateFirstListener);
 			        }
 			    });
+				
 				
 			}
 		});
@@ -153,6 +185,23 @@ public class MainActivity extends Activity implements LocationListener{
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
+
+		static final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
+
+		@Override
+		public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+			if (loadedImage != null) {
+				ImageView imageView = (ImageView) view;
+				boolean firstDisplay = !displayedImages.contains(imageUri);
+				if (firstDisplay) {
+					FadeInBitmapDisplayer.animate(imageView, 500);
+					displayedImages.add(imageUri);
+				}
+			}
+		}
 	}
 
 

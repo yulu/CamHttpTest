@@ -29,7 +29,7 @@ public class JsonParser {
 		try{
 			if(response != null){
 				JSONObject ja = new JSONObject(response);
-				String class_name = ja.getString("class_name");
+				String class_name = ja.getString("object_name");
 				return class_name;
 			}else
 				return NETWORK_ERROR;

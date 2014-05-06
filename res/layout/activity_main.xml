@@ -51,4 +51,10 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:text="upload"/>
+    <ImageView
+        android:id="@+id/object_image"
+        android:layout_width="100dip"
+        android:layout_height="100dip"
+        android:layout_margin="5dip"
+        android:src="@drawable/ic_launcher"/>
 </RelativeLayout>
